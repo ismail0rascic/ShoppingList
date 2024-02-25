@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('created_user_id');
             $table->longText('description');
-            $table->integer('is_bought');
+            $table->integer('is_bought')->nullable();
             $table->timestamps();
 
             $table->foreign('created_user_id')->references('id')->on('users')->onDelete('cascade'); 

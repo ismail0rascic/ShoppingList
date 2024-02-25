@@ -15,6 +15,14 @@ class Item extends Model
         'create_user_id',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($post) {
+            $post->created_user_id = auth()->id();
+        });
+    }
     public function creator() {
         return $this->belongsToOne(User::class, 'create_user_id');
     }

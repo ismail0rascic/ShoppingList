@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,17 +18,10 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    if (Auth::check()) {
+        return redirect('/list');
+    }
+})->middleware(['auth', 'verified'])->name('main');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,4 +29,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::middleware('auth')->group(function () {
+    Route::get('/list', [App\Http\Controllers\ItemController::class, 'index'])->name('list');
+    Route::get('/list/import', [App\Http\Controllers\ItemController::class, 'import'])->name('list.import');
+    Route::post('/list/import', [App\Http\Controllers\ItemController::class, 'storeImport'])->name('list.import');
+    Route::get('/list/export', [App\Http\Controllers\ItemController::class, 'export'])->name('list.export');
+    Route::post('item/{id}/mark-as-bought/', [App\Http\Controllers\ItemController::class, 'markAsBought'])->name('markAsBought');
+});
+
+Route::resource('item', App\Http\Controllers\ItemController::class)->middleware(['auth']);
+
+require __DIR__ . '/auth.php';
