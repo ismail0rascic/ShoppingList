@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -16,7 +18,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::all();
+        $items = Item::orderBy('created_at', 'desc')->get();
         $users = User::all();
 
         return Inertia::render('List', ['items' => $items, "users" => $users]);
@@ -71,7 +73,7 @@ class ItemController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'description' => 'description',
+            'description' => 'required',
         ]);
 
         $item = Item::find($id);
@@ -123,7 +125,15 @@ class ItemController extends Controller
         $jsonContent = file_get_contents($json);
         $items = json_decode($jsonContent, true);
 
+        if ($items === null && json_last_error() !== JSON_ERROR_NONE) {
+            return redirect()->back()->withInput()->withErrors(['json' => 'JSON is not valid. Some elements are missing.'])->withStatus(422);
+        }
+
         foreach ($items as $itemData) {
+            if (!isset($itemData['id']) || !isset($itemData['description']) || !isset($itemData['created_user_id']) || !isset($itemData['created_at']) || !isset($itemData['updated_at'])) {
+                return redirect()->back()->withInput()->withErrors(['json' => 'JSON is not valid. Some elements are missing.'])->withStatus(422);
+            }
+
             $existingItem = Item::find($itemData['id']);
 
             if ($existingItem) {
@@ -131,9 +141,17 @@ class ItemController extends Controller
                     'description' => $itemData['description'],
                 ]);
             } else {
-                Item::create([
+                $currentUserId = Auth::id();
+                $user = User::find($itemData['created_user_id']);
+                $createdUserId = $user ? $itemData['created_user_id'] : $currentUserId;
+
+                Item::insert([
                     'id' => $itemData['id'],
                     'description' => $itemData['description'],
+                    'created_user_id' => $createdUserId,
+                    'is_bought' => $itemData['is_bought'],
+                    'created_at' => Carbon::parse($itemData['created_at']),
+                    'updated_at' => Carbon::parse($itemData['updated_at'])
                 ]);
             }
         }

@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Inertia } from "@inertiajs/inertia";
+
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
 export default function ItemEdit({ auth, item, errors }) {
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState(item.description);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        Inertia.put(`/item/${item.id}`, {
+            description: description,
+        });
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -21,8 +31,7 @@ export default function ItemEdit({ auth, item, errors }) {
                         <div className="p-6 text-gray-900">
                             <div>
                                 <form
-                                    action={`/item/${item.id}`}
-                                    method="POST"
+                                    onSubmit={handleSubmit}
                                     className="space-y-4"
                                 >
                                     <input

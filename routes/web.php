@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/list', [App\Http\Controllers\ItemController::class, 'index'])->name('list');
     Route::get('/list/import', [App\Http\Controllers\ItemController::class, 'import'])->name('list.import');
-    Route::post('/list/import', [App\Http\Controllers\ItemController::class, 'storeImport'])->name('list.import');
+    Route::post('/list/import', [App\Http\Controllers\ItemController::class, 'storeImport'])->name('list.import.store');
     Route::get('/list/export', [App\Http\Controllers\ItemController::class, 'export'])->name('list.export');
     Route::post('item/{id}/mark-as-bought/', [App\Http\Controllers\ItemController::class, 'markAsBought'])->name('markAsBought');
 });
