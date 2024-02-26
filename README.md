@@ -42,20 +42,31 @@ Follow these steps to set up the application:
     ```bash
     yarn
     ```
+5. Install JavaScript dependencies using npm or yarn:
 
-5. Create a copy of the `.env.example` file and rename it to `.env`:
+    ```bash
+    npm install
+    ```
+
+    or
+
+    ```bash
+    yarn
+    ```
+
+6. Create a copy of the `.env.example` file and rename it to `.env`:
 
     ```bash
     cp .env.example .env
     ```
 
-6. Generate an application key:
+7. Generate an application key:
 
     ```bash
     php artisan key:generate
     ```
 
-7. Configure your database settings in the `.env` file:
+8. Configure your database settings in the `.env` file:
 
     ```dotenv
     DB_CONNECTION=mysql
@@ -66,13 +77,13 @@ Follow these steps to set up the application:
     DB_PASSWORD=your_database_password
     ```
 
-8. Run the database migrations:
+9. Run the database migrations:
 
     ```bash
     php artisan migrate
     ```
 
-9. Start the development server:
+10. Start the development server:
 
     ```bash
     php artisan serve
@@ -80,7 +91,7 @@ Follow these steps to set up the application:
 
     This will start the Laravel development server.
 
-10. Compile assets and start the frontend server:
+11. Compile assets and start the frontend server:
 
     ```bash
     npm run dev
@@ -94,7 +105,7 @@ Follow these steps to set up the application:
 
     This will compile the assets and start the frontend server.
 
-11. Visit `http://localhost:8000` in your browser to view the application.
+12. Visit `http://localhost:8000` in your browser to view the application.
 
 ## Artisan Commands
 
