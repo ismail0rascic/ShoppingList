@@ -42,10 +42,10 @@ Follow these steps to set up the application:
     ```bash
     yarn
     ```
-5. Install JavaScript dependencies using npm or yarn:
+5. Build app:
 
     ```bash
-    npm install
+    npm run build
     ```
 
     or
